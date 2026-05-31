@@ -38,9 +38,10 @@ pnpm -r build
 
 ## Run
 
-**Backend** (default port 3001):
+**Backend** (default port 3001, uses the Nest CLI):
 ```bash
-pnpm --filter @browserscape/backend start
+pnpm --filter @browserscape/backend start       # nest start
+pnpm --filter @browserscape/backend start:dev   # nest start --watch (hot reload)
 # POST http://localhost:3001/analyze  { "url": "https://example.com" }
 ```
 
