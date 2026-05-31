@@ -17,7 +17,11 @@ export async function extractPageCss(
   page: Page,
   url: string,
 ): Promise<PageExtraction> {
-  await page.goto(url, { waitUntil: "networkidle", timeout: 30000 });
+  // "networkidle" is unreliable on real sites (analytics / persistent
+  // connections keep the network busy and it times out). "load" fires once
+  // resources are in; a short settle lets JS-injected / CSS-in-JS rules land.
+  await page.goto(url, { waitUntil: "load", timeout: 30000 });
+  await page.waitForTimeout(500);
 
   const data = await page.evaluate(() => {
     const inline: string[] = [];

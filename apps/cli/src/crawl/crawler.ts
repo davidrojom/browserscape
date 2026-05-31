@@ -22,6 +22,7 @@ export async function crawl(
   const start = normalizeUrl(startUrl);
 
   const visited = new Set<string>();
+  const succeeded: string[] = [];
   const queue: Array<{ url: string; depth: number }> = [
     { url: start, depth: 0 },
   ];
@@ -37,14 +38,19 @@ export async function crawl(
       const page = await browser.newPage();
       try {
         const { sources: pageSources, links } = await extractPageCss(page, url);
+        succeeded.push(url);
         sources.push(...pageSources);
         if (depth < maxDepth) {
           for (const link of links) {
             if (!visited.has(link)) queue.push({ url: link, depth: depth + 1 });
           }
         }
-      } catch {
-        // skip pages that fail to load
+      } catch (err) {
+        // Don't fail the whole crawl on one page, but never swallow silently —
+        // a hidden failure would masquerade as a clean (100%) result.
+        console.warn(
+          `browserscape: failed to analyze ${url}: ${(err as Error).message}`,
+        );
       } finally {
         await page.close();
       }
@@ -53,5 +59,5 @@ export async function crawl(
     await browser.close();
   }
 
-  return { pages: [...visited], sources };
+  return { pages: succeeded, sources };
 }

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, ServiceUnavailableException } from "@nestjs/common";
 import { analyzeCss, type CompatibilityReport } from "@browserscape/core";
 import { crawl } from "../crawl/crawler.js";
 import type { AnalyzeDto } from "./analyze.dto.js";
@@ -22,6 +22,14 @@ export class AnalyzeService {
       maxDepth: dto.maxDepth,
       maxPages: dto.maxPages,
     });
+
+    if (pages.length === 0) {
+      // No page could be loaded/rendered — reporting 100% here would be a lie.
+      throw new ServiceUnavailableException(
+        `Could not load or render ${dto.url}`,
+      );
+    }
+
     const report = await analyzeCss(sources, {
       browserslist: dto.browserslist,
     });
