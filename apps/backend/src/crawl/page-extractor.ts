@@ -20,7 +20,14 @@ export async function extractPageCss(
   // "networkidle" is unreliable on real sites (analytics / persistent
   // connections keep the network busy and it times out). "load" fires once
   // resources are in; a short settle lets JS-injected / CSS-in-JS rules land.
-  await page.goto(url, { waitUntil: "load", timeout: 30000 });
+  const response = await page.goto(url, { waitUntil: "load", timeout: 30000 });
+  // goto does not throw on HTTP error status, so a bot-protection / WAF block
+  // (403/429/503) "loads" a page whose trivial CSS would otherwise be scored as
+  // a clean 100%. Reject any non-2xx so the crawler skips it rather than
+  // reporting a hollow result.
+  if (response && !response.ok()) {
+    throw new Error(`HTTP ${response.status()} response for ${url}`);
+  }
   await page.waitForTimeout(500);
 
   const data = await page.evaluate(() => {

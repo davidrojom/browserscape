@@ -11,6 +11,7 @@ import {
   DEFAULT_THRESHOLDS,
 } from "./types.js";
 import { classifySeverity } from "./severity.js";
+import { NON_BREAKING_FEATURES } from "./non-breaking.js";
 import {
   missingDataToRefs,
   refsToBrowserslistTokens,
@@ -63,6 +64,9 @@ export async function analyzeCss(
           featureData?: RawUsage["featureData"];
           usage?: { source?: { start?: { line?: number; column?: number } } };
         };
+        // Skip features that degrade gracefully and never break a page (e.g.
+        // font-family value keywords). Reporting them would be a false positive.
+        if (NON_BREAKING_FEATURES.has(u.feature)) return;
         collected.push({
           feature: u.feature,
           featureData: u.featureData ?? {},

@@ -11,6 +11,13 @@ let targetUrl: string;
 
 beforeAll(async () => {
   target = createServer((req, res) => {
+    if (req.url === "/nocss") {
+      // Loads with 200 but carries no stylesheet — the shape of a bot-protection
+      // challenge page. There is nothing real to score here.
+      res.setHeader("content-type", "text/html");
+      res.end(`<html><head><title>t</title></head><body>blocked</body></html>`);
+      return;
+    }
     res.setHeader("content-type", "text/html");
     res.end(
       `<html><head><style>.h{display:flow-root}</style></head><body>home</body></html>`,
@@ -54,4 +61,11 @@ describe("POST /analyze", () => {
       .send({ url: "not-a-url" })
       .expect(400);
   });
+
+  it("returns 503 instead of a hollow 100% when no CSS could be extracted", async () => {
+    await request(app.getHttpServer())
+      .post("/analyze")
+      .send({ url: `${targetUrl}nocss`, maxDepth: 0, maxPages: 1 })
+      .expect(503);
+  }, 90000);
 });

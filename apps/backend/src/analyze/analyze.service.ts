@@ -30,6 +30,15 @@ export class AnalyzeService {
       );
     }
 
+    if (sources.length === 0) {
+      // Pages loaded but carried no CSS — typically a bot-protection challenge
+      // or block page rendered in place of the real site. With nothing to
+      // analyze, a 100% score would be hollow, so fail loudly instead.
+      throw new ServiceUnavailableException(
+        `Loaded ${dto.url} but found no CSS to analyze — the site may be behind bot protection or blocking automated browsers.`,
+      );
+    }
+
     const report = await analyzeCss(sources, {
       browserslist: dto.browserslist,
     });

@@ -13,6 +13,16 @@ beforeAll(async () => {
       // Never responds: keeps the network busy so "networkidle" would time out.
       return;
     }
+    if (req.url === "/blocked") {
+      // Simulates a bot-protection / WAF block: the page loads fine but the
+      // status says we were denied. Its trivial CSS would otherwise score 100%.
+      res.statusCode = 403;
+      res.setHeader("content-type", "text/html");
+      res.end(
+        `<html><head><style>.b{color:red}</style></head><body>Access denied</body></html>`,
+      );
+      return;
+    }
     res.setHeader("content-type", "text/html");
     res.end(
       `<html><head><style>.h{display:flow-root}</style></head>` +
@@ -51,5 +61,14 @@ describe("extractPageCss", () => {
     await page.close();
     expect(Date.now() - started).toBeLessThan(15000); // nowhere near the 30s timeout
     expect(result.sources.map((s) => s.css).join("\n")).toContain("flow-root");
+  }, 60000);
+
+  // Regression: a blocked page (403/429/503 from bot protection) loads without
+  // a navigation error. It must be rejected, not counted as a clean page whose
+  // trivial CSS reports a hollow 100%.
+  it("throws on a non-2xx (blocked) response", async () => {
+    const page = await browser.newPage();
+    await expect(extractPageCss(page, `${base}blocked`)).rejects.toThrow(/403/);
+    await page.close();
   }, 60000);
 });

@@ -12,7 +12,13 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Browserscape" },
+      { title: "Browserscape - CSS browser compatibility analysis" },
+      {
+        name: "description",
+        content:
+          "Paste a URL and Browserscape crawls the pages, scans every CSS feature, and scores real-world browser support.",
+      },
+      { name: "theme-color", content: "#0a0b0d" },
     ],
     links: [{ rel: "stylesheet", href: css }],
   }),

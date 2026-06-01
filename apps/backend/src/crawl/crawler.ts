@@ -3,6 +3,7 @@ import type { CssSource } from "@browserscape/core";
 import { extractPageCss } from "./page-extractor.js";
 import { normalizeUrl } from "./crawl-utils.js";
 import { createRobotsChecker } from "./robots.js";
+import { LAUNCH_ARGS, newStealthContext } from "./stealth.js";
 
 export interface CrawlOptions {
   maxDepth?: number;
@@ -41,14 +42,15 @@ export async function crawl(
   const perPage: PageResult[] = [];
   const sources: CssSource[] = [];
 
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ args: LAUNCH_ARGS });
+  const context = await newStealthContext(browser);
   try {
     while (queue.length > 0 && visited.size < maxPages) {
       const { url, depth } = queue.shift()!;
       if (visited.has(url) || !isAllowed(url)) continue;
       visited.add(url);
 
-      const page = await browser.newPage();
+      const page = await context.newPage();
       try {
         const { sources: pageSources, links } = await extractPageCss(page, url);
         succeeded.push(url);
@@ -71,6 +73,7 @@ export async function crawl(
       }
     }
   } finally {
+    await context.close();
     await browser.close();
   }
 

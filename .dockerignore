@@ -1,0 +1,24 @@
+# Keep the build context small and reproducible: never ship host artifacts.
+**/node_modules
+**/dist
+**/.output
+**/.vite
+**/.turbo
+**/coverage
+**/*.log
+
+.git
+.gitignore
+.github
+.planning
+.vscode
+.idea
+.claude
+
+# Local env files must not leak into images; pass config at build/run time.
+**/.env
+**/.env.*
+
+**/*.md
+Dockerfile*
+.dockerignore

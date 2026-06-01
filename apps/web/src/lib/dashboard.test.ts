@@ -3,6 +3,7 @@ import {
   SEVERITY_ORDER,
   criticalFeatures,
   filterBySeverity,
+  featuresFailingIn,
   scoreColor,
 } from "./dashboard.js";
 import type { FeatureFinding } from "./types.js";
@@ -46,6 +47,28 @@ describe("filterBySeverity", () => {
         (x) => x.featureId,
       ),
     ).toEqual(["b"]);
+  });
+});
+
+describe("featuresFailingIn", () => {
+  const safari = { id: "safari", name: "Safari", version: "16" };
+  const firefox = { id: "firefox", name: "Firefox", version: "121" };
+  const feats: FeatureFinding[] = [
+    { ...f("critico", "a"), missingIn: [safari] },
+    { ...f("medio", "b"), missingIn: [firefox] },
+    { ...f("bajo", "c"), missingIn: [safari, firefox] },
+  ];
+
+  it("returns features whose missingIn matches the browser id and version", () => {
+    expect(featuresFailingIn(feats, safari).map((x) => x.featureId)).toEqual([
+      "a",
+      "c",
+    ]);
+  });
+
+  it("matches on version, not just id", () => {
+    const old = { id: "safari", name: "Safari", version: "14" };
+    expect(featuresFailingIn(feats, old)).toHaveLength(0);
   });
 });
 

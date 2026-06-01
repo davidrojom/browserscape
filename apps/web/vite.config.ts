@@ -1,8 +1,15 @@
 import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
-import viteReact from "@vitejs/plugin-react";
 
 export default defineConfig({
   server: { port: 3000 },
-  plugins: [tanstackStart(), viteReact()],
+  plugins: [
+    tailwindcss(),
+    tanstackStart({
+      customViteReactPlugin: true,
+    }),
+    react(),
+  ],
 });
