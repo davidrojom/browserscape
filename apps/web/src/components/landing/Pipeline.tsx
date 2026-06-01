@@ -26,14 +26,14 @@ const STEPS = [
 export function Pipeline() {
   const reduce = useReducedMotion();
   return (
-    <section id="how" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-24">
+    <section id="how" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16 sm:py-24">
       <Reveal>
         <h2 className="max-w-[16ch] text-3xl font-semibold tracking-tight sm:text-4xl">
           From URL to report in a single pass.
         </h2>
       </Reveal>
 
-      <div className="relative mt-16">
+      <div className="relative mt-10 sm:mt-16">
         {/* drawn connector (desktop) */}
         <motion.div
           aria-hidden="true"

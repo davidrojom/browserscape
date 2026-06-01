@@ -21,8 +21,8 @@ const ROWS: { feature: string; pct: number; support: boolean[] }[] = [
 
 export function SupportMatrix() {
   return (
-    <section id="features" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-24">
-      <div className="grid gap-3 lg:grid-cols-[1fr_auto] lg:items-end">
+    <section id="features" className="mx-auto max-w-6xl scroll-mt-20 px-5 py-16 sm:py-24">
+      <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
         <Reveal>
           <h2 className="max-w-[20ch] text-3xl font-semibold tracking-tight sm:text-4xl">
             One green column on your machine. A wall of red on theirs.
@@ -32,7 +32,7 @@ export function SupportMatrix() {
             by how many of your users sit on an engine that lacks it.
           </p>
         </Reveal>
-        <Reveal delay={0.1} className="hidden gap-5 font-mono text-xs lg:flex">
+        <Reveal delay={0.1} className="flex gap-5 font-mono text-xs">
           <span className="flex items-center gap-1.5 text-muted">
             <span className="h-2 w-2 rounded-full bg-accent" /> renders
           </span>
@@ -42,7 +42,10 @@ export function SupportMatrix() {
         </Reveal>
       </div>
 
-      <Reveal delay={0.08} className="mt-12">
+      <Reveal delay={0.08} className="mt-8 sm:mt-12">
+        <p className="mb-2 text-right font-mono text-xs text-faint sm:hidden">
+          swipe to compare engines →
+        </p>
         <div className="overflow-x-auto rounded-[var(--radius-card)] border border-line bg-surface">
           <table className="w-full min-w-[640px] border-collapse">
             <thead>

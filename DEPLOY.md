@@ -10,11 +10,27 @@ production `Dockerfile` that builds from the **repository root** as context.
 
 Create **two applications** in Coolify from the same Git repository.
 
+> [!IMPORTANT]
+> In Coolify the **Base Directory is the Docker build context**. These are
+> monorepo Dockerfiles: they `COPY` the root lockfile, `pnpm-workspace.yaml`
+> and `packages/core`, so the context **must be the repository root**.
+>
+> Set **Base Directory = `/`** (NOT `/apps/backend` or `/apps/web`) and put the
+> service path in **Dockerfile Location**. If you point Base Directory at the
+> service folder the build fails with `"/apps/backend": not found` /
+> `"/pnpm-workspace.yaml": not found` — see Troubleshooting below.
+>
+> | Field | Backend | Web |
+> | --- | --- | --- |
+> | Base Directory | `/` | `/` |
+> | Dockerfile Location | `/apps/backend/Dockerfile` | `/apps/web/Dockerfile` |
+
 ## Backend — `api.browserscape.davidrojom.com`
 
 - **Build pack:** Dockerfile
-- **Dockerfile location:** `apps/backend/Dockerfile`
-- **Base directory:** `/` (the build needs the lockfile + `packages/core`)
+- **Base Directory:** `/`  ← the build context; the build needs the root
+  lockfile + `packages/core`
+- **Dockerfile Location:** `/apps/backend/Dockerfile`
 - **Port:** `3001`
 - **Domain:** `https://api.browserscape.davidrojom.com`
 - **Environment variables:** none required. `PORT` defaults to `3001`;
@@ -29,8 +45,8 @@ web domain work without extra configuration.
 ## Web — `browserscape.davidrojom.com`
 
 - **Build pack:** Dockerfile
-- **Dockerfile location:** `apps/web/Dockerfile`
-- **Base directory:** `/`
+- **Base Directory:** `/`  ← the build context (repo root)
+- **Dockerfile Location:** `/apps/web/Dockerfile`
 - **Port:** `3000`
 - **Domain:** `https://browserscape.davidrojom.com`
 - **Build argument (required):**
@@ -59,3 +75,17 @@ docker build -f apps/web/Dockerfile \
 docker run --rm -p 3001:3001 browserscape-backend
 docker run --rm -p 3000:3000 browserscape-web
 ```
+
+## Troubleshooting
+
+**`failed to compute cache key: "/apps/backend": not found` (or `/pnpm-workspace.yaml`, `/packages/core`, ...)**
+
+The Base Directory is pointing at the service folder instead of the repo root,
+so Docker only receives `apps/backend` as the build context and the monorepo
+`COPY` paths don't exist. Fix it in the application's **Build** settings:
+
+- Base Directory: `/`
+- Dockerfile Location: `/apps/backend/Dockerfile` (or `/apps/web/Dockerfile`)
+
+A tell-tale sign in the logs is a tiny `transferring context` (~1 kB) and an
+empty `.dockerignore` (2B): Coolify is using the wrong directory as context.
