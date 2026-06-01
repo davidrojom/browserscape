@@ -53,13 +53,18 @@ export function ReportActions({ data }: { data: AnalyzeResponse }) {
   return (
     <div className="flex flex-wrap items-center gap-2">
       <CopyPromptButton data={data} />
-      <button onClick={downloadJson} className={ghost}>
+      <button
+        onClick={downloadJson}
+        data-umami-event="report-export-json"
+        className={ghost}
+      >
         <DownloadSimple size={16} />
         Export JSON
       </button>
       <button
         onClick={copyLink}
         aria-label="Copy a link to this report"
+        data-umami-event="report-copy-link"
         className={ghost}
       >
         {linkCopied ? (

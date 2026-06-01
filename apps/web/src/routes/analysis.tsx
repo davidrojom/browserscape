@@ -98,6 +98,7 @@ function ResultsHeader({ url, score }: { url?: string; score?: number }) {
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-5">
         <Link
           to="/"
+          data-umami-event="analysis-back-home"
           className="group flex shrink-0 items-center gap-2 text-sm text-muted transition-colors hover:text-fg"
         >
           <ArrowLeft
@@ -338,6 +339,7 @@ function ErrorState({
       <div className="mt-6 flex gap-3">
         <button
           onClick={onRetry}
+          data-umami-event="analysis-retry"
           className="inline-flex h-11 items-center gap-2 rounded-[var(--radius-control)] bg-accent px-5 font-medium text-[color:var(--color-on-accent)] transition-[transform,background-color] duration-150 hover:bg-accent-hi active:scale-[0.97]"
         >
           <ArrowClockwise size={16} weight="bold" />
@@ -345,6 +347,7 @@ function ErrorState({
         </button>
         <Link
           to="/"
+          data-umami-event="analysis-new-url"
           className="inline-flex h-11 items-center rounded-[var(--radius-control)] border border-line px-5 text-muted transition-colors hover:text-fg"
         >
           New URL

@@ -28,6 +28,7 @@ export function CopySnippet({ code }: { code: string }) {
       <button
         onClick={onCopy}
         aria-label="Copy snippet"
+        data-umami-event="copy-fix-snippet"
         className="absolute right-2 top-2 inline-flex h-7 w-7 items-center justify-center rounded-md border border-line bg-surface text-muted transition-colors hover:text-fg hover:border-line-strong active:scale-[0.94]"
       >
         {copied ? (

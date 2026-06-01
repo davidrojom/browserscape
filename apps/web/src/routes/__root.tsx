@@ -21,6 +21,13 @@ export const Route = createRootRoute({
       { name: "theme-color", content: "#0a0b0d" },
     ],
     links: [{ rel: "stylesheet", href: css }],
+    scripts: [
+      {
+        src: "https://analytics.davidrojom.com/script.js",
+        defer: true,
+        "data-website-id": "f82373d9-88be-42e7-b508-2d6543cc4b79",
+      },
+    ],
   }),
   component: RootComponent,
 });

@@ -64,6 +64,7 @@ export function UrlForm({
           />
           <button
             type="submit"
+            data-umami-event="analyze-submit"
             className="inline-flex h-10 shrink-0 items-center gap-2 rounded-[8px] bg-accent px-4 font-medium text-[color:var(--color-on-accent)] transition-[transform,background-color] duration-150 ease-[var(--ease-out-strong)] hover:bg-accent-hi active:scale-[0.97]"
           >
             Analyze
@@ -85,6 +86,8 @@ export function UrlForm({
                 key={ex}
                 type="button"
                 onClick={() => go(ex)}
+                data-umami-event="analyze-example"
+                data-umami-event-domain={ex}
                 className="rounded-full border border-line px-2.5 py-1 font-mono text-xs text-muted transition-colors duration-150 hover:border-accent hover:text-accent"
               >
                 {ex}

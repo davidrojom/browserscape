@@ -27,6 +27,7 @@ export function CopyPromptButton({ data }: { data: AnalyzeResponse }) {
     <button
       onClick={onCopy}
       aria-label="Copy an AI fix prompt with every issue and the pages it affects"
+      data-umami-event="report-copy-ai-prompt"
       className="inline-flex h-10 shrink-0 items-center gap-2 rounded-[var(--radius-control)] border border-line bg-surface px-4 text-sm font-medium text-fg transition-[transform,background-color,border-color] duration-150 hover:border-line-strong hover:bg-surface-2 active:scale-[0.97]"
     >
       {copied ? (
