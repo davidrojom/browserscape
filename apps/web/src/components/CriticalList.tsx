@@ -35,7 +35,7 @@ export function CriticalList({ features }: { features: FeatureFinding[] }) {
               <li
                 key={f.featureId}
                 className="overflow-hidden rounded-[var(--radius-control)] border border-line bg-surface-2/50"
-                style={{ borderLeft: `3px solid ${SEVERITY_VAR.critico}` }}
+                style={{ borderLeft: `3px solid ${SEVERITY_VAR.critical}` }}
               >
                 <button
                   type="button"

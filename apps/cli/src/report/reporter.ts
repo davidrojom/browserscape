@@ -3,17 +3,17 @@ import Table from "cli-table3";
 import type { CompatibilityReport, Severity } from "@browserscape/core";
 
 const SEVERITY_LABEL: Record<Severity, string> = {
-  critico: "Critico",
-  importante: "Importante",
-  medio: "Medio",
-  bajo: "Bajo",
+  critical: "Critico",
+  important: "Importante",
+  medium: "Medio",
+  low: "Bajo",
 };
 
 const SEVERITY_COLOR: Record<Severity, (s: string) => string> = {
-  critico: chalk.red.bold,
-  importante: chalk.yellow.bold,
-  medio: chalk.cyan,
-  bajo: chalk.gray,
+  critical: chalk.red.bold,
+  important: chalk.yellow.bold,
+  medium: chalk.cyan,
+  low: chalk.gray,
 };
 
 export function formatReport(
@@ -28,10 +28,10 @@ export function formatReport(
   );
   lines.push("");
   lines.push(
-    `Critico: ${report.bySeverity.critico}  ` +
-      `Importante: ${report.bySeverity.importante}  ` +
-      `Medio: ${report.bySeverity.medio}  ` +
-      `Bajo: ${report.bySeverity.bajo}`,
+    `Critico: ${report.bySeverity.critical}  ` +
+      `Importante: ${report.bySeverity.important}  ` +
+      `Medio: ${report.bySeverity.medium}  ` +
+      `Bajo: ${report.bySeverity.low}`,
   );
 
   if (report.features.length > 0) {

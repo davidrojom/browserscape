@@ -15,6 +15,9 @@ import {
   SEVERITY_LABEL,
   SEVERITY_VAR,
   SEVERITY_RANK,
+  IMPACT_LABEL,
+  IMPACT_VAR,
+  IMPACT_BLURB,
   filterBySeverity,
 } from "../lib/dashboard.js";
 import {
@@ -316,6 +319,26 @@ function FeatureRow({
                     <p className="text-sm leading-relaxed text-muted">
                       {featureDescription(f)}
                     </p>
+                    {f.impact && f.impact !== "none" && (
+                      <div className="mt-3">
+                        <span
+                          className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-xs font-medium"
+                          style={{
+                            color: IMPACT_VAR[f.impact],
+                            borderColor: IMPACT_VAR[f.impact],
+                          }}
+                        >
+                          <span
+                            className="h-1.5 w-1.5 rounded-full"
+                            style={{ background: IMPACT_VAR[f.impact] }}
+                          />
+                          {IMPACT_LABEL[f.impact]} impact
+                        </span>
+                        <p className="mt-1.5 text-xs leading-relaxed text-muted">
+                          {IMPACT_BLURB[f.impact]}
+                        </p>
+                      </div>
+                    )}
                     <div className="mt-3 flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-faint">
                       <FileHtml size={13} />
                       Found on {locations.length}{" "}

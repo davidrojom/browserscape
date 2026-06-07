@@ -9,7 +9,7 @@ const report: CompatibilityReport = {
     {
       featureId: "flow-root",
       title: "display: flow-root",
-      severity: "critico",
+      severity: "critical",
       affectedUsage: 6.2,
       missingIn: [{ id: "ie", name: "IE", version: "11" }],
       occurrences: [{ origin: "http://a.com#sheet-0" }],
@@ -22,7 +22,7 @@ const report: CompatibilityReport = {
       supportRatio: 0,
     },
   ],
-  bySeverity: { critico: 1, importante: 0, medio: 0, bajo: 0 },
+  bySeverity: { critical: 1, important: 0, medium: 0, low: 0 },
 };
 
 describe("formatReport", () => {

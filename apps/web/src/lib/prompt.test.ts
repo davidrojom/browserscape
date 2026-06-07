@@ -11,13 +11,13 @@ const base: AnalyzeResponse = {
       { id: "chrome", name: "Chrome", version: "120" },
       { id: "safari", name: "Safari", version: "16" },
     ],
-    bySeverity: { critico: 1, importante: 1, medio: 0, bajo: 0 },
+    bySeverity: { critical: 1, important: 1, medium: 0, low: 0 },
     byBrowser: [],
     features: [
       {
         featureId: "css-color-mix",
         title: "color-mix()",
-        severity: "importante",
+        severity: "important",
         affectedUsage: 22,
         missingIn: [{ id: "safari", name: "Safari", version: "16" }],
         occurrences: [{ origin: "https://acme.studio/#sheet-0", line: 12 }],
@@ -25,7 +25,7 @@ const base: AnalyzeResponse = {
       {
         featureId: "css-has",
         title: ":has() selector",
-        severity: "critico",
+        severity: "critical",
         affectedUsage: 14,
         missingIn: [{ id: "firefox", name: "Firefox", version: "121" }],
         occurrences: [

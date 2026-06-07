@@ -10,7 +10,7 @@ import type { FeatureFinding } from "./types.js";
 const make = (over: Partial<FeatureFinding> = {}): FeatureFinding => ({
   featureId: "css-has",
   title: ":has() selector",
-  severity: "critico",
+  severity: "critical",
   affectedUsage: 10,
   missingIn: [],
   occurrences: [],
