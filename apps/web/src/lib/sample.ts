@@ -21,7 +21,7 @@ export const SAMPLE_REPORT: AnalyzeResponse = {
   report: {
     overallScore: 73,
     targetBrowsers: [chrome, safari, firefox, edge, samsung],
-    bySeverity: { critico: 2, importante: 4, medio: 7, bajo: 9 },
+    bySeverity: { critical: 2, important: 4, medium: 7, low: 9 },
     byBrowser: [
       { browser: chrome, unsupportedFeatures: 2, supportRatio: 0.97 },
       { browser: edge, unsupportedFeatures: 2, supportRatio: 0.97 },
@@ -33,7 +33,8 @@ export const SAMPLE_REPORT: AnalyzeResponse = {
       {
         featureId: "css-has",
         title: ":has() selector",
-        severity: "critico",
+        severity: "critical",
+        impact: "degraded",
         affectedUsage: 14,
         missingIn: [firefox],
         occurrences: [{ origin: "/styles/app.css", line: 42 }],
@@ -41,7 +42,8 @@ export const SAMPLE_REPORT: AnalyzeResponse = {
       {
         featureId: "css-subgrid",
         title: "subgrid",
-        severity: "critico",
+        severity: "critical",
+        impact: "breaking",
         affectedUsage: 6,
         missingIn: [samsung],
         occurrences: [{ origin: "/styles/layout.css", line: 18 }],
@@ -49,7 +51,8 @@ export const SAMPLE_REPORT: AnalyzeResponse = {
       {
         featureId: "css-text-wrap-balance",
         title: "text-wrap: balance",
-        severity: "importante",
+        severity: "important",
+        impact: "degraded",
         affectedUsage: 9,
         missingIn: [safari, samsung],
         occurrences: [{ origin: "/styles/type.css", line: 7 }],
@@ -57,7 +60,8 @@ export const SAMPLE_REPORT: AnalyzeResponse = {
       {
         featureId: "css-color-mix",
         title: "color-mix()",
-        severity: "importante",
+        severity: "important",
+        impact: "degraded",
         affectedUsage: 22,
         missingIn: [safari],
         occurrences: [{ origin: "/styles/theme.css", line: 12 }],
@@ -65,7 +69,8 @@ export const SAMPLE_REPORT: AnalyzeResponse = {
       {
         featureId: "css-container-queries",
         title: "container queries",
-        severity: "medio",
+        severity: "medium",
+        impact: "breaking",
         affectedUsage: 17,
         missingIn: [safari],
         occurrences: [{ origin: "/styles/cards.css", line: 30 }],

@@ -14,7 +14,7 @@ function group(features: FeatureFinding[]): Group[] {
     const cat = featureCategory(f);
     let g = map.get(cat);
     if (!g) {
-      g = { category: cat, total: 0, bySeverity: { critico: 0, importante: 0, medio: 0, bajo: 0 } };
+      g = { category: cat, total: 0, bySeverity: { critical: 0, important: 0, medium: 0, low: 0 } };
       map.set(cat, g);
     }
     g.total++;

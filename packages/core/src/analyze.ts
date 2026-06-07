@@ -11,7 +11,7 @@ import {
   DEFAULT_THRESHOLDS,
 } from "./types.js";
 import { classifySeverity } from "./severity.js";
-import { NON_BREAKING_FEATURES } from "./non-breaking.js";
+import { impactOf, IMPACT_WEIGHTS, isHidden } from "./impact.js";
 import {
   missingDataToRefs,
   refsToBrowserslistTokens,
@@ -64,9 +64,10 @@ export async function analyzeCss(
           featureData?: RawUsage["featureData"];
           usage?: { source?: { start?: { line?: number; column?: number } } };
         };
-        // Skip features that degrade gracefully and never break a page (e.g.
-        // font-family value keywords). Reporting them would be a false positive.
-        if (NON_BREAKING_FEATURES.has(u.feature)) return;
+        // Skip features in the hidden (`none`) impact tier — gaps that degrade
+        // gracefully with no visible signal (e.g. font-family value keywords).
+        // Reporting them would be a false positive. See impact.ts.
+        if (isHidden(u.feature)) return;
         collected.push({
           feature: u.feature,
           featureData: u.featureData ?? {},
@@ -93,10 +94,16 @@ export async function analyzeCss(
         column: u.column,
       });
     } else {
+      // Severity weighs usage share against breakage impact: a cosmetic gap on a
+      // high-share browser (e.g. resize on iOS Safari) must not outrank a
+      // layout-breaking one. See impact.ts.
+      const impact = impactOf(u.feature);
+      const effective = affectedUsage * IMPACT_WEIGHTS[impact];
       byFeature.set(u.feature, {
         featureId: u.feature,
         title: u.featureData.title ?? u.feature,
-        severity: classifySeverity(affectedUsage, thresholds),
+        impact,
+        severity: classifySeverity(effective, thresholds),
         affectedUsage: Number(affectedUsage.toFixed(2)),
         missingIn,
         occurrences: [{ origin: u.origin, line: u.line, column: u.column }],
@@ -107,35 +114,38 @@ export async function analyzeCss(
     (a, b) => b.affectedUsage - a.affectedUsage,
   );
 
-  // Per-browser: count features whose missingIn includes that browser.
+  // Per-browser support, weighted by impact: a browser that only misses
+  // cosmetic features barely loses support, while a missing breaking feature
+  // counts in full. unsupportedFeatures stays a raw count for display.
+  const totalWeight =
+    features.reduce((sum, f) => sum + IMPACT_WEIGHTS[f.impact], 0) || 1;
   const byBrowser = targetBrowsers.map((browser) => {
-    const unsupportedFeatures = features.filter((f) =>
+    const missing = features.filter((f) =>
       f.missingIn.some(
         (m) => m.id === browser.id && m.version === browser.version,
       ),
-    ).length;
-    const total = features.length || 1;
+    );
+    const unsupportedWeight = missing.reduce(
+      (sum, f) => sum + IMPACT_WEIGHTS[f.impact],
+      0,
+    );
     return {
       browser,
-      unsupportedFeatures,
-      supportRatio: 1 - unsupportedFeatures / total,
+      unsupportedFeatures: missing.length,
+      supportRatio: 1 - unsupportedWeight / totalWeight,
     };
   });
 
-  // Usage-weighted overall score.
-  let weightSum = 0;
-  let weightedSupport = 0;
-  for (const b of byBrowser) {
-    const usage = affectedUsageFor([b.browser]); // single-browser coverage = its usage %
-    weightSum += usage;
-    weightedSupport += usage * b.supportRatio;
-  }
-  const overallScore =
-    features.length === 0 || weightSum === 0
-      ? 100
-      : Math.round((weightedSupport / weightSum) * 100);
+  // Overall score as an impact-weighted penalty: each finding subtracts its
+  // effective impact (usage share × breakage weight). A purely cosmetic gap
+  // costs a point or two; a widely-unsupported breaking feature costs a lot.
+  const totalPenalty = features.reduce(
+    (sum, f) => sum + f.affectedUsage * IMPACT_WEIGHTS[f.impact],
+    0,
+  );
+  const overallScore = Math.max(0, Math.min(100, Math.round(100 - totalPenalty)));
 
-  const bySeverity = { critico: 0, importante: 0, medio: 0, bajo: 0 };
+  const bySeverity = { critical: 0, important: 0, medium: 0, low: 0 };
   for (const f of features) bySeverity[f.severity]++;
 
   return { overallScore, targetBrowsers, features, byBrowser, bySeverity };

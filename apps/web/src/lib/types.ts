@@ -1,4 +1,7 @@
-export type Severity = "critico" | "importante" | "medio" | "bajo";
+export type Severity = "critical" | "important" | "medium" | "low";
+
+/** Breakage class behind a finding's severity. `none` features are hidden. */
+export type ImpactClass = "breaking" | "degraded" | "cosmetic" | "none";
 
 export interface BrowserRef {
   id: string;
@@ -10,6 +13,8 @@ export interface FeatureFinding {
   featureId: string;
   title: string;
   severity: Severity;
+  /** Optional: absent on responses produced before impact scoring shipped. */
+  impact?: ImpactClass;
   affectedUsage: number;
   missingIn: BrowserRef[];
   occurrences: { origin: string; line?: number; column?: number }[];

@@ -1,29 +1,34 @@
-import type { BrowserRef, FeatureFinding, Severity } from "./types.js";
+import type {
+  BrowserRef,
+  FeatureFinding,
+  ImpactClass,
+  Severity,
+} from "./types.js";
 
 export const SEVERITY_ORDER: Severity[] = [
-  "critico",
-  "importante",
-  "medio",
-  "bajo",
+  "critical",
+  "important",
+  "medium",
+  "low",
 ];
 
 /** Numeric weight per severity, critical highest. Used for sorting. */
 export const SEVERITY_RANK: Record<Severity, number> = {
-  critico: 3,
-  importante: 2,
-  medio: 1,
-  bajo: 0,
+  critical: 3,
+  important: 2,
+  medium: 1,
+  low: 0,
 };
 
 export const SEVERITY_LABEL: Record<Severity, string> = {
-  critico: "Critical",
-  importante: "Important",
-  medio: "Medium",
-  bajo: "Low",
+  critical: "Critical",
+  important: "Important",
+  medium: "Medium",
+  low: "Low",
 };
 
 export function criticalFeatures(features: FeatureFinding[]): FeatureFinding[] {
-  return features.filter((f) => f.severity === "critico");
+  return features.filter((f) => f.severity === "critical");
 }
 
 export function filterBySeverity(
@@ -54,10 +59,10 @@ export function scoreColor(score: number): "green" | "amber" | "red" {
 
 /** CSS color value per severity, drawn from the functional data scale. */
 export const SEVERITY_VAR: Record<Severity, string> = {
-  critico: "var(--color-broken)",
-  importante: "var(--color-warn)",
-  medio: "var(--color-cool)",
-  bajo: "var(--color-faint)",
+  critical: "var(--color-broken)",
+  important: "var(--color-warn)",
+  medium: "var(--color-cool)",
+  low: "var(--color-faint)",
 };
 
 export function scoreVar(score: number): string {
@@ -71,3 +76,32 @@ export function scoreVerdict(score: number): string {
   if (score >= 60) return "Needs attention";
   return "High risk";
 }
+
+/**
+ * Display metadata for a finding's impact class — the breakage axis behind its
+ * severity. It explains why a high-usage gap can still rank low: severity is
+ * usage share weighted by how badly the page actually breaks.
+ */
+export const IMPACT_LABEL: Record<ImpactClass, string> = {
+  breaking: "Breaking",
+  degraded: "Degraded",
+  cosmetic: "Cosmetic",
+  none: "Hidden",
+};
+
+export const IMPACT_VAR: Record<ImpactClass, string> = {
+  breaking: "var(--color-broken)",
+  degraded: "var(--color-warn)",
+  cosmetic: "var(--color-cool)",
+  none: "var(--color-faint)",
+};
+
+export const IMPACT_BLURB: Record<ImpactClass, string> = {
+  breaking:
+    "Layout or functionality genuinely breaks where this is unsupported.",
+  degraded:
+    "Noticeable but usable — a progressive enhancement that falls back cleanly.",
+  cosmetic:
+    "Degrades gracefully with no layout or visual impact — low priority.",
+  none: "No visible impact; hidden from the report.",
+};
