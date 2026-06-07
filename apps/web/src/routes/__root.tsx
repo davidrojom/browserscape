@@ -5,7 +5,14 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import css from "../styles.css?url";
+// Inline the (small, ~8.5 KB gzip) app CSS into the SSR document head as a
+// <style> tag instead of a hashed <link>. TanStack Start runs the client and
+// SSR builds separately, and each emits its own styles-[hash].css; when the two
+// content hashes diverge the SSR <link> points at a file that only exists under
+// the client hash, 404s, and the page paints unstyled until hydration reinjects
+// the correct link (FOUC). Inlining removes that dependency entirely and is the
+// recommended delivery for critical CSS this size.
+import css from "../styles.css?inline";
 
 export const Route = createRootRoute({
   head: () => ({
@@ -20,7 +27,6 @@ export const Route = createRootRoute({
       },
       { name: "theme-color", content: "#0a0b0d" },
     ],
-    links: [{ rel: "stylesheet", href: css }],
     scripts: [
       {
         src: "https://analytics.davidrojom.com/script.js",
@@ -37,6 +43,7 @@ function RootComponent(): ReactNode {
     <html lang="en">
       <head>
         <HeadContent />
+        <style dangerouslySetInnerHTML={{ __html: css }} />
       </head>
       <body>
         <Outlet />
